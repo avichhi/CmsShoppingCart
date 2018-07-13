@@ -1,0 +1,123 @@
+﻿@model IEnumerable<CmsShopingCart.Models.ViewModels.PagesVM>
+
+@{
+    ViewBag.Title = "Pages";
+}
+
+<h2>Pages</h2>
+@if (TempData["SM"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SM"]
+    </div>
+}
+@if (TempData["DM"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["DM"]
+    </div>
+}
+<p>
+    @Html.ActionLink("Add New Page", "AddPage", null, new { @class = "btn btn-success" })
+</p>
+
+@if (!Model.Any())
+{
+    <h1 class="text-center text-danger"> There are Not Pages</h1>
+}
+else
+{
+    <table class="table table-bordered table-condensed table-hover table-responsive js-sorting" id="pages">
+        <tr class="home">
+            <th >
+                Title
+            </th>
+            <th>
+                Slug
+            </th>
+
+            <th>
+                HasSidebar
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="id_@item.Id" class="@item.Slug">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slug)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.HasSidebar)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditPage", new { id = item.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Details", "DetailsPage", new { id = item.Id }, new { @class = "btn btn-primary" }) |
+                    @Html.ActionLink("Delete", "DeletePage", new { id = item.Id }, new { @class = "js-delete btn btn-danger" })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+
+}
+
+
+@section scripts{
+
+
+
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            /*
+             *Bootbox confirm 
+             */
+            $('a.js-delete').on('click', function (e) {
+                e.preventDefault();
+                href = $(this).attr('href');
+                return bootbox.confirm('Are you sure want to delete ?', function (result) {
+                    if (result) {
+                        window.location = href
+                    }
+                });
+            });
+
+            /*
+             *Sortable 
+             */
+            $("table#pages tbody").sortable({
+                items: "tr:not(.home)",
+                placeholder: "ui-state-highlight",
+                update: function () {
+                    var ids = $("table#pages tbody").sortable("serialize");
+                    var url = "/Admin/Pages/RecordPages";
+                    $.post(url, ids, function (data) {
+
+
+                    });
+                }
+
+
+
+            });
+
+
+
+        });
+
+
+    </script>
+
+
+}
