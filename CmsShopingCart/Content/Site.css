@@ -5,3 +5,20 @@
 .ui-state-highlight{
     border:2px dashed #000000;
 }
+div.new-cat{
+    margin-top:20px;
+    position:relative;
+}
+span.ajax-text{
+    display:none;
+}
+.table.js-sorting.categories{
+    padding : 30px !important;
+}
+.ajaxdivtd{
+    position:absolute;
+}
+
+ul.without-bullets {
+    list-style-type: none;
+}
