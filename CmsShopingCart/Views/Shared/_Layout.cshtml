@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="icon" href="~/avedesk.ico" />
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - CmsShoppingCart</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" style="border-color:burlywood;background-color:burlywood">
+    <div class="navbar navbar-inverse navbar-fixed-topcancel" style="border-color:pink;background-color:darkslategray">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -18,27 +18,50 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a href="/" class="navbar-brand" style="color: lightpink;">CmsShoppingSite</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav ">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @Html.Action("PagesMenuPartial", "Pages")
+                </ul>
+                <ul class="navbar-right without-bullets">
+                    <li>
+                        @Html.Action("CartPartial","Cart")
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
+        <div class="row">
+            <div class="col-xs-12 col-md-2">
+                @Html.Action("CategoryMenuPartial", "Shop")
+            </div>
+            @if (ViewBag.HasSidebar == true && ViewBag.HasSidebar != null)
+            {
+                <div class="col-xs-12 col-md-7">
+                    @RenderBody()
+                </div>
+                <div class="col-xs-12 col-md-3">
+                    @Html.Action("SidebarPartial", "Pages")
+                </div>
+            }
+            else
+            {
+                <div class="col-xs-12 col-md-10">
+                    @RenderBody()
+                </div>
+
+            }
+        </div>
+
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - All rights are reserved | CmsShopingSite</p>
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/scripts")
     @RenderSection("scripts", required: false)
 </body>
 </html>

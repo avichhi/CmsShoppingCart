@@ -22,3 +22,27 @@ span.ajax-text{
 ul.without-bullets {
     list-style-type: none;
 }
+.navbar-brand {
+    color: lightpink;
+}
+.active {
+    color: lightpink;
+    background-color:darkslategray;
+}
+span.loader {
+ display:none;
+}
+.ajaxmsg {
+  background:green;
+  color:white;
+  padding:10px;
+  display:none;
+  position:absolute;
+  bottom:0;
+}
+.ib {
+
+    display:inline-block!important;
+}
+
+
