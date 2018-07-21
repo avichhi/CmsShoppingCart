@@ -23,20 +23,78 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav ">
                     @Html.Action("PagesMenuPartial", "Pages")
+                    @if (Request.IsAuthenticated && User.IsInRole("User"))
+                    {
+                        <li>@Html.Action("UserNavPartial", "Account", new { area = "" })</li>
+                    }
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li> <a href="/account/logout" style="color: lightpink;">Logout</a></li>
+                    }
+                    else
+                    {
+                        if (ViewBag.Title == "Login")
+                        {
+                            <li class="active"> <a href="/account/Login" style="color: deeppink; background-color:darkslategray">Login</a></li>
+                        }
+                        else
+                        {
+                            <li> <a href="/account/Login" style="color: lightpink;">Login</a></li>
+                        }
+                    }
                 </ul>
-                <ul class="navbar-right without-bullets">
-                    <li>
-                        @Html.Action("CartPartial","Cart")
-                    </li>
-                </ul>
+
+                @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <ul class="navbar-right without-bullets"> <li style="margin-top:10px"> @Html.ActionLink("Admin Area", "Index", "Dashboard", new { area = "Admin" }, new { @class = "btn btn-warning" })</li></ul>
+                }
+                else
+                {
+                    if (ViewBag.Title != "Cart - Details")
+                    {
+                        <ul class="navbar-right without-bullets">
+                            <li>
+                                @Html.Action("CartPartial", "Cart")
+                            </li>
+                        </ul>
+                    }
+
+                }
+
+
             </div>
         </div>
     </div>
     <div class="container body-content">
         <div class="row">
-            <div class="col-xs-12 col-md-2">
-                @Html.Action("CategoryMenuPartial", "Shop")
+            <div class="ajaxbg">
+                <span>
+                    <img src="~/Content/img/ajax-loader.gif" />
+                </span>
             </div>
+            @if (ViewBag.Title != "Login" && ViewBag.Title != "Create Account" && ViewBag.Title != "User Profile" && ViewBag.Title != "Orders")
+            {
+                <div class="col-xs-12 col-md-2">
+                    @Html.Action("CategoryMenuPartial", "Shop")
+                </div>
+            }
+
+            @if (ViewBag.Title == "User Profile")
+            {
+                <div class="col-xs-12 col-md-2">
+                    <ul class="without-bullets">
+                        <li><a href="/account/orders" class="btn btn-warning">My Order</a></li>
+                    </ul>
+                </div>
+            }
+            @if (ViewBag.Title == "Orders")
+            {
+                <div class="col-xs-12 col-md-2">
+                    <ul class="without-bullets" >
+                        <li><a href="/account/user-profile" class="btn btn-primary"> My Profile</a></li>
+                    </ul>
+                </div>
+            }
             @if (ViewBag.HasSidebar == true && ViewBag.HasSidebar != null)
             {
                 <div class="col-xs-12 col-md-7">

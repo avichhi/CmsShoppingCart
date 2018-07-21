@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace CmsShopingCart.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PagesController : Controller
     {
         private readonly Db db;

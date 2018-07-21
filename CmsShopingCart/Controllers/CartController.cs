@@ -3,6 +3,8 @@ using CmsShopingCart.Models.ViewModels.Cart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -121,6 +123,60 @@ namespace CmsShopingCart.Controllers
             var cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
             var model = cart.FirstOrDefault(x => x.ProductId == productId);
             cart.Remove(model);
+        }
+        public ActionResult PaypalPartial()
+        {
+            var cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
+
+            return PartialView(cart);
+        }
+        [HttpPost]
+        public void PlaceOrder()
+        {
+            var cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
+            string username = User.Identity.Name;
+            
+            var orderDTO = new OrderDTO();
+            var q = db.Users.FirstOrDefault(x => x.Username == username);
+            int userId = q.Id;
+            orderDTO.UserId = userId;
+            orderDTO.CreateAt = DateTime.Now;
+            db.Orders.Add(orderDTO);
+            db.SaveChanges();
+            var orderdId = orderDTO.OrderId;
+            var orderDetailsDTO = new OrderDetailsDTO();
+            foreach (var item in cart)
+            {
+                orderDetailsDTO.OrderId = orderdId;
+                orderDetailsDTO.UserId = userId;
+                orderDetailsDTO.ProductId = item.ProductId;
+                orderDetailsDTO.Quantity = item.Quantity;
+                db.OrderDetails.Add(orderDetailsDTO);
+                db.SaveChanges();
+            }
+
+            try
+            {
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+                //Email
+                mail.From = new MailAddress("Email");
+                mail.To.Add(q.EmailAddress);
+                mail.Subject = "CMS Shooping Cart  Order  Initiated";
+                mail.Body = "Your Order is Initiated";
+
+                SmtpServer.Port = 587;
+                //Email & Password
+                SmtpServer.Credentials = new NetworkCredential("Email", "Password");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+            }
+            catch (Exception)
+            {
+                RedirectToAction("Index", "Pages");
+            }
+            Session["cart"] = null;
         }
     }
     

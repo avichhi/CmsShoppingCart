@@ -9,8 +9,11 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using PagedList;
+using CmsShopingCart.Areas.Admin.Models.ViewModels.Shop;
+
 namespace CmsShopingCart.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ShopController : Controller
     {
         private readonly Db db;
@@ -331,6 +334,37 @@ namespace CmsShopingCart.Areas.Admin.Controllers
                 System.IO.File.Delete(fullPath1);
             if (System.IO.File.Exists(fullPath2))
                 System.IO.File.Delete(fullPath2);
+        }
+
+        public ActionResult Orders()
+        {
+            var ordersForAdmin = new List<OrdersForAdminVM>();
+            var orders = db.Orders.ToArray().Select(x => new OrderVM(x)).ToList();
+            foreach (var order in orders)
+            {
+                var productsAndQty = new Dictionary<string, int>();
+                var total = 0m;
+                var orderDetailsList = db.OrderDetails.Where(x => x.OrderId == order.OrderId).ToList();
+                var user = db.Users.Where(x => x.Id == order.UserId).FirstOrDefault();
+                var username = user.Username;
+                foreach (var orderDetails in orderDetailsList)
+                {
+                    var product = db.Products.Where(x => x.Id == orderDetails.ProductId).FirstOrDefault();
+                    var productname = product.Name;
+                    var price = product.Price;
+                    productsAndQty.Add(productname, orderDetails.Quantity);
+                    total += orderDetails.Quantity * price;
+                }
+                ordersForAdmin.Add(new OrdersForAdminVM()
+                {
+                    OrderNumber = order.OrderId,
+                    Username = username,
+                    Total = total,
+                    ProductAndQty = productsAndQty,
+                    CreateAt = order.CreateAt
+                });
+            }
+            return View(ordersForAdmin);
         }
 
     }

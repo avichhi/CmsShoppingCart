@@ -39,15 +39,15 @@ else
 
         @foreach (var item in Model)
         {
-            <tr id="id_@item.Id">
+            <tr id="id_@item.Id" >
                 <td>
-                    <div class="ajaxdivtd"></div>
-                    @Html.EditorFor(modelItem => item.Name, new { htmlAttributes = new { @class = "text-box form-control", @readonly = "readonly" } })
+                    <div class="ajaxdivtd" ></div>
+                    @Html.EditorFor(modelItem => item.Name, new { htmlAttributes = new { @class = "text-box form-control", @readonly = "readonly", @style = "margin:10px" } })
                 </td>
 
                 <td>
 
-                    @Html.ActionLink("Delete", "DeleteCategory", new { id = item.Id }, new { @class = "js-delete btn btn-danger" })
+                    @Html.ActionLink("Delete", "DeleteCategory", new { id = item.Id }, new { @class = "js-delete btn btn-danger", @style = "margin:10px" })
                 </td>
             </tr>
         }
